@@ -97,6 +97,8 @@ const nextButton = document.getElementById("nextBtn");
 const reasonButton = document.getElementById("r1");
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
+const sumbitButton = document.getElementById("submit");
+const restartButton = document.getElementById("restart");
 
 let currentQuestionIndex = 0;
 let score = 0;
@@ -104,14 +106,18 @@ let score = 0;
 function startQuiz() {
   currentQuestionIndex = 0;
   score = 0;
-
+  restartButton.classList.add("hidden");
   startScreen.classList.add("hidden");
+ 
   quizScreen.classList.remove("hidden");
 
   questionElement.classList.remove("hidden");
   answerButtons.classList.remove("hidden");
+  sumbitButton.classList.remove("hidden");
+  nextButton.classList.remove("hidden");
 
   nextButton.innerHTML = "Next";
+  sumbitButton.innerHTML = "SUBMIT";
 
   showQuestion();
 }
@@ -181,11 +187,13 @@ function selectAnswer(e) {
 function showScore() {
   resetState();
   reasonButton.classList.add("hidden");
+  nextButton.classList.add("hidden");
+  sumbitButton.classList.add("hidden");
+  restartButton.classList.remove("hidden");
 
   questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
 
-  nextButton.innerHTML = "Try Again";
-  nextButton.style.display = "block";
+  restartButton.innerHTML = "Try Again";
 }
 
 function handleNextButton() {

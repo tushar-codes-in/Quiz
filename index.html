@@ -7,51 +7,36 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-br from-green-700 to-emarald-900 min-h-screen flex items-center justify-center text-white">
+<body class="bg-gradient-to-br from-green-700 to-emerald-900 min-h-screen flex items-center justify-center text-white">
 
   <div class="w-[90%] max-w-4xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-16">
+
+    <!-- START SCREEN -->
     <div id="start-screen" class="w-full text-center">
-  <h1 class="text-4xl md:text-5xl font-bold mb-6">
-    Are you ready for the test?
-  </h1>
-  <p class="text-lg md:text-xl mb-8">Test your HTML skills </p>
-  
-  <button onclick="startQuiz()" 
-    class="bg-red-600 px-8 py-4 text-lg rounded-xl hover:bg-red-700 transition mx-auto block">
-    Start
-  </button>
-</div>
-
-   <div id="quiz-screen" class="hidden">
-    <h1 class="hidden text-3xl font-bold text-center mb-12 " id="question">Q1. How are you?</h1>
-
-    <div class="hidden grid grid-cols-2 gap-8 mb-12" id="answer-button">
-      <button class="bg-fuchsia-700 hover:bg-sky-600 transition-all duration-300 py-8 text-lg rounded-2xl border border-white/20 shadow-md" >Good</button>
-      <button class="bg-fuchsia-700 hover:bg-sky-600 transition-all duration-300 py-8 text-lg rounded-2xl border border-white/20 shadow-md" >Okay</button>
-      <button class="bg-fuchsia-700 hover:bg-sky-600 transition-all duration-300 py-8 text-lg rounded-2xl border border-white/20 shadow-md" >Bad</button>
-      <button class="bg-fuchsia-700 hover:bg-sky-600 transition-all duration-300 py-8 text-lg rounded-2xl border border-white/20 shadow-md" >Awesome</button>
+      <h1 class="text-4xl font-bold mb-6">Are you ready for the test?</h1>
+      <button onclick="startQuiz()" class="bg-red-600 px-8 py-4 rounded-xl">Start</button>
     </div>
-    
-      <div class="hidden bg-lime-500 hover:red-700 transition-all duration-300 px-10 py-4 font-semibold cursor-pointer" id="r1">Reason</div>
-    <br>
 
-    <div class="flex justify-center cursor-pointer" id="nextBtn">
-      <button class="bg-indigo-600 hover:bg-indigo-700 transition-all duration-300 px-10 py-4 rounded-xl text-lg font-semibold">
-        Next 
-      </button>
+    <!-- QUIZ SCREEN -->
+    <div id="quiz-screen" class="hidden">
+
+      <h1 id="question" class="hidden text-3xl text-center mb-12"></h1>
+
+      <div id="answer-button" class="hidden grid grid-cols-2 gap-8 mb-12"></div>
+
+      <div id="r1" class="hidden px-6 py-3 rounded-xl mb-6"></div>
+
+      <div class="flex justify-center">
+        <button id="nextBtn" class="bg-indigo-600 px-6 py-3 rounded-xl">
+          Next
+        </button>
+      </div>
+
     </div>
-    <button class="hidden flex items-center justify-center" id="submit" onclick="showScore()">SUBMIT</button>
-    <button class="hidden flex items-center justify-center" id="restart" onclick="startQuiz()"></button>
-    
-    <div id="score"></div>
-    
 
   </div>
-  </div>
 
-  <script src="script.js">
-    </script>
-
+  <script src="script.js"></script>
 
 </body>
 </html>

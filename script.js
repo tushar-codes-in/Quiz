@@ -91,127 +91,149 @@ const questions = [
   }
 ];
 
+// ELEMENTS
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-button");
 const nextButton = document.getElementById("nextBtn");
 const reasonButton = document.getElementById("r1");
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
-const sumbitButton = document.getElementById("submit");
-const restartButton = document.getElementById("restart");
 
+// STATE
 let currentQuestionIndex = 0;
 let score = 0;
+let selectedAnswer = null;
+let answered = false;
+let showResult = false;
+let quizFinished = false;
 
+// START QUIZ
 function startQuiz() {
   currentQuestionIndex = 0;
   score = 0;
-  restartButton.classList.add("hidden");
+
   startScreen.classList.add("hidden");
- 
   quizScreen.classList.remove("hidden");
 
   questionElement.classList.remove("hidden");
   answerButtons.classList.remove("hidden");
-  sumbitButton.classList.remove("hidden");
-  nextButton.classList.remove("hidden");
-
-  nextButton.innerHTML = "Next";
-  sumbitButton.innerHTML = "SUBMIT";
 
   showQuestion();
 }
 
+// SHOW QUESTION
 function showQuestion() {
   resetState();
 
   let currentQuestion = questions[currentQuestionIndex];
-  let questionNo = currentQuestionIndex + 1;
-
-  questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+  questionElement.innerHTML = `${currentQuestionIndex + 1}. ${currentQuestion.question}`;
 
   currentQuestion.answers.forEach(answer => {
     const button = document.createElement("button");
     button.innerHTML = answer.text;
     button.className = "bg-fuchsia-700 hover:bg-sky-600 py-4 rounded-xl cursor-pointer";
 
-    if (answer.correct) {
-      button.dataset.correct = "true";
-    } else {
-      button.dataset.reason = answer.reason;
-    }
+    if (answer.correct) button.dataset.correct = "true";
+    else button.dataset.reason = answer.reason;
 
     button.addEventListener("click", selectAnswer);
     answerButtons.appendChild(button);
   });
 }
 
+// RESET STATE
 function resetState() {
+  nextButton.innerHTML = "Next";
   nextButton.style.display = "none";
   reasonButton.classList.add("hidden");
+
+  answered = false;
+  selectedAnswer = null;
+  showResult = false;
 
   while (answerButtons.firstChild) {
     answerButtons.removeChild(answerButtons.firstChild);
   }
 }
 
+// SELECT ANSWER (can change before Next)
 function selectAnswer(e) {
-  const selectedBtn = e.target;
-  const isCorrect = selectedBtn.dataset.correct === "true";
+  Array.from(answerButtons.children).forEach(btn =>
+    btn.classList.remove("bg-blue-700")
+  );
 
-  if (isCorrect) {
-    score++;
-    selectedBtn.classList.add("bg-green-700");
-    reasonButton.innerHTML = "CORRECT";
-    reasonButton.classList.remove("hidden");
-    reasonButton.classList.remove("bg-red-700");
-    reasonButton.classList.add("bg-green-700");
-  } else {
-    selectedBtn.classList.add("bg-red-800");
-    reasonButton.innerHTML = selectedBtn.dataset.reason;
-    reasonButton.classList.remove("hidden");
-    reasonButton.classList.remove("bg-green-700");
-    reasonButton.classList.add("bg-red-700");
-  }
+  selectedAnswer = e.target;
+  answered = true;
 
-  Array.from(answerButtons.children).forEach(button => {
-    if (button.dataset.correct === "true") {
-      button.classList.add("bg-green-700");
-    }
-    button.disabled = true;
-  });
-
+  selectedAnswer.classList.add("bg-blue-700");
   nextButton.style.display = "block";
 }
 
+// MAIN BUTTON LOGIC
+nextButton.addEventListener("click", () => {
+
+  // 👉 TRY AGAIN
+  if (quizFinished) {
+    quizScreen.classList.add("hidden");
+    startScreen.classList.remove("hidden");
+    quizFinished = false;
+    return;
+  }
+
+  // 👉 SHOW RESULT
+  if (!showResult) {
+
+    if (!answered) {
+      alert("Select an answer!");
+      return;
+    }
+
+    const isCorrect = selectedAnswer.dataset.correct === "true";
+
+    if (isCorrect) {
+      score++;
+      selectedAnswer.classList.replace("bg-blue-700", "bg-green-700");
+
+      reasonButton.innerHTML = "CORRECT";
+      reasonButton.className = "bg-green-700 px-6 py-3 rounded-xl mb-6";
+    } else {
+      selectedAnswer.classList.replace("bg-blue-700", "bg-red-700");
+
+      reasonButton.innerHTML = selectedAnswer.dataset.reason;
+      reasonButton.className = "bg-red-700 px-6 py-3 rounded-xl mb-6";
+    }
+
+    Array.from(answerButtons.children).forEach(btn => {
+      if (btn.dataset.correct === "true") {
+        btn.classList.add("bg-green-700");
+      }
+      btn.disabled = true;
+    });
+
+    nextButton.innerHTML = "Continue";
+    showResult = true;
+  }
+
+  // 👉 NEXT QUESTION
+  else {
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      showScore();
+    }
+  }
+});
+
+// SHOW SCORE
 function showScore() {
   resetState();
-  reasonButton.classList.add("hidden");
-  nextButton.classList.add("hidden");
-  sumbitButton.classList.add("hidden");
-  restartButton.classList.remove("hidden");
 
   questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
 
-  restartButton.innerHTML = "Try Again";
+  nextButton.innerHTML = "Try Again";
+  nextButton.style.display = "block";
+
+  quizFinished = true;
 }
-
-function handleNextButton() {
-  currentQuestionIndex++;
-
-  if (currentQuestionIndex < questions.length) {
-    showQuestion();
-  } else {
-    showScore();
-  }
-}
-
-nextButton.addEventListener("click", () => {
-  if (currentQuestionIndex < questions.length) {
-    handleNextButton();
-  } else {
-  
-    quizScreen.classList.add("hidden");
-    startScreen.classList.remove("hidden");
-  }
-});

@@ -91,7 +91,6 @@ const questions = [
   }
 ];
 
-// ELEMENTS
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-button");
 const nextButton = document.getElementById("nextBtn");
@@ -99,7 +98,6 @@ const reasonButton = document.getElementById("r1");
 const startScreen = document.getElementById("start-screen");
 const quizScreen = document.getElementById("quiz-screen");
 
-// STATE
 let currentQuestionIndex = 0;
 let score = 0;
 let selectedAnswer = null;
@@ -107,7 +105,6 @@ let answered = false;
 let showResult = false;
 let quizFinished = false;
 
-// START QUIZ
 function startQuiz() {
   currentQuestionIndex = 0;
   score = 0;
@@ -121,7 +118,6 @@ function startQuiz() {
   showQuestion();
 }
 
-// SHOW QUESTION
 function showQuestion() {
   resetState();
 
@@ -140,8 +136,6 @@ function showQuestion() {
     answerButtons.appendChild(button);
   });
 }
-
-// RESET STATE
 function resetState() {
   nextButton.innerHTML = "Next";
   nextButton.style.display = "none";
@@ -156,7 +150,6 @@ function resetState() {
   }
 }
 
-// SELECT ANSWER (can change before Next)
 function selectAnswer(e) {
   Array.from(answerButtons.children).forEach(btn =>
     btn.classList.remove("bg-blue-700")
@@ -169,18 +162,14 @@ function selectAnswer(e) {
   nextButton.style.display = "block";
 }
 
-// MAIN BUTTON LOGIC
 nextButton.addEventListener("click", () => {
 
-  // 👉 TRY AGAIN
   if (quizFinished) {
     quizScreen.classList.add("hidden");
     startScreen.classList.remove("hidden");
     quizFinished = false;
     return;
   }
-
-  // 👉 SHOW RESULT
   if (!showResult) {
 
     if (!answered) {
@@ -214,7 +203,6 @@ nextButton.addEventListener("click", () => {
     showResult = true;
   }
 
-  // 👉 NEXT QUESTION
   else {
     currentQuestionIndex++;
 
@@ -226,7 +214,7 @@ nextButton.addEventListener("click", () => {
   }
 });
 
-// SHOW SCORE
+
 function showScore() {
   resetState();
 

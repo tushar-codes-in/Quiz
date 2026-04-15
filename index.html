@@ -4,30 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quiz UI</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .glow:hover {
+      box-shadow: 0 0 20px rgba(99,102,241,0.6);
+    }
+  </style>
 </head>
 
-<body class="bg-gradient-to-br from-green-700 to-emerald-900 min-h-screen flex items-center justify-center text-white">
+<body class="bg-gradient-to-br from-[#0f172a] via-[#020617] to-black min-h-screen flex items-center justify-center text-white">
 
-  <div class="w-[90%] max-w-4xl bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-16">
+  <div class="w-[95%] max-w-3xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl shadow-2xl p-10 transition-all duration-500 hover:scale-[1.01]">
 
-    <!-- START SCREEN -->
-    <div id="start-screen" class="w-full text-center">
-      <h1 class="text-4xl font-bold mb-6">Are you ready for the test?</h1>
-      <button onclick="startQuiz()" class="bg-red-600 px-8 py-4 rounded-xl">Start</button>
+    <div class="w-full bg-white/10 rounded-full h-2 mb-6 overflow-hidden">
+      <div id="progressBar" class="bg-indigo-500 h-2 transition-all duration-500" style="width: 0%"></div>
     </div>
 
-    <!-- QUIZ SCREEN -->
-    <div id="quiz-screen" class="hidden">
+    <div id="start-screen" class="text-center fade-in">
+      <h1 class="text-4xl font-bold mb-4">Ready to test your knowledge?</h1>
+      <p class="text-gray-400 mb-8">Lets Test Your HTML skills</p>
+      <button onclick="startQuiz()" class="bg-gradient-to-r from-indigo-500 to-purple-600 px-8 py-4 rounded-xl font-semibold glow transition-all">
+        Start Quiz
+      </button>
+    </div>
 
-      <h1 id="question" class="hidden text-3xl text-center mb-12"></h1>
+    <div id="quiz-screen" class="hidden fade-in">
 
-      <div id="answer-button" class="hidden grid grid-cols-2 gap-8 mb-12"></div>
+      <div id="progressText" class="text-sm text-gray-400 mb-2"></div>
 
-      <div id="r1" class="hidden px-6 py-3 rounded-xl mb-6"></div>
+      <h1 id="question" class="text-2xl font-semibold mb-8"></h1>
 
-      <div class="flex justify-center">
-        <button id="nextBtn" class="bg-indigo-600 px-6 py-3 rounded-xl">
+      <div id="answer-button" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+
+      <div id="r1" class="hidden px-4 py-2 rounded-lg mb-4 text-sm"></div>
+
+      <div class="flex justify-between items-center">
+        <div id="scoreTracker" class="text-gray-400 text-sm"></div>
+        <button id="nextBtn" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-2 rounded-lg transition-all glow">
           Next
         </button>
       </div>
@@ -35,6 +63,41 @@
     </div>
 
   </div>
+
+  <script>
+
+    function updateProgressUI() {
+      const progressText = document.getElementById("progressText");
+      const progressBar = document.getElementById("progressBar");
+
+      if (typeof questions !== "undefined") {
+        progressText.innerHTML = `Question ${currentQuestionIndex + 1} / ${questions.length}`;
+        progressBar.style.width = ((currentQuestionIndex) / questions.length) * 100 + "%";
+      }
+    }
+
+    const originalShowQuestion = window.showQuestion;
+    window.showQuestion = function() {
+      originalShowQuestion();
+      updateProgressUI();
+      document.getElementById("question").classList.add("fade-in");
+    }
+
+    const originalShowScore = window.showScore;
+    window.showScore = function() {
+      originalShowScore();
+      document.getElementById("progressBar").style.width = "100%";
+    }
+
+    const observer = new MutationObserver(() => {
+      const buttons = document.querySelectorAll("#answer-button button");
+      buttons.forEach(btn => {
+        btn.className = "bg-white/10 hover:bg-indigo-600/30 border border-white/10 py-3 rounded-lg transition-all duration-300 glow";
+      });
+    });
+
+    observer.observe(document.getElementById("answer-button"), { childList: true });
+  </script>
 
   <script src="script.js"></script>
 
